@@ -135,12 +135,12 @@
                   <a href="{% url "cropping" %}" class="nav-link">Cropper</a>
                 </li>
                 <li class="nav-item">
-                  <a href="" class="nav-link">Nearest-Neighbor Interpolation</a>
+                  <a href="{% url 'NearestNeighborInterpolation' %}" class="nav-link">Nearest-Neighbor Interpolation</a>
                 </li>
-                <li class="nav-item">
+                {% comment %} <li class="nav-item">
                   <a href="" class="nav-link">Bilinear Interpolation</a>
                 </li>
-              
+               {% endcomment %}
               </ul>
             </div>
           </li>
