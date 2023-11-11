@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 import os
 from django.conf import settings
+from django.contrib import messages
 
 
 def resize_image(image_path, width, height):
@@ -77,3 +78,21 @@ def delete_image(request, pk):
             return redirect('upload_image')
     
     return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/delete_image.html', {'image': image})
+
+def save_image(request, pk):
+    try:
+        image = Image.objects.get(pk=pk)
+    except ObjectDoesNotExist:
+        return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/image_not_found.html')
+
+    if request.method == 'POST':
+        # Check if the user has confirmed the save
+        if request.POST.get('confirm_save') == 'yes':
+            # Save the resized image
+            image.original_image = image.resized_image
+            image.resized_image = None
+            image.save()
+            messages.success(request, 'Image saved successfully')
+            return redirect('image_detail', pk=image.pk)
+    
+    return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/save_image.html', {'image': image})

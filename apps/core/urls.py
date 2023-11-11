@@ -8,4 +8,5 @@ urlpatterns = [
     path('upload/', views.upload_image, name='upload_image'),
     path('image/<int:pk>/', views.image_detail, name='image_detail'),
     path('delete/<int:pk>/', views.delete_image, name='delete_image'),
+    path('save/<int:pk>/', views.save_image, name='save_image'),
 ]

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html>
 <head>
     <title>Image Resizer</title>
@@ -17,6 +17,79 @@
     {% csrf_token %}
     <button type="submit">Delete Image</button>
 </form>
+
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="NobleUI">
+    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+    <title>Image Resizer</title>
+
+    {% include "includes/loadstatic.html" %}
+
+</head>
+<body>
+    <div class="main-wrapper">
+
+        {% include "partials/_sidebar.html" %}
+        {% include "partials/_setting.html" %}
+
+        <div class="page-wrapper">
+
+            {% include "partials/_navbar.html" %}
+
+            <div class="page-content">
+
+                <h2>Image Details</h2>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <label class="mb-2 fw-bold text-light">Original Image:</label>
+
+                                <div class="mb-3">
+                                    <img src="{{ image.original_image.url }}" alt="Original Image" class="w-100" id="croppingImage">
+                                </div>
+                                {% if image.resized_image %}
+                                <label class="mb-2 fw-bold text-light">Resized Image:</label>
+
+                                    <div class="mb-3">
+                                        <img src="{{ image.resized_image.url }}" alt="Resized Image" class="w-100 cropped-img mt-2">
+                                    </div>
+
+
+                                {% endif %}
+                                <form method="post" action="{% url 'save_image' pk=image.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete Image</button>
+                                    <a href="{% url 'upload_image' %}" class="btn btn-primary">Back</a>
+                        
+                                </form>
+                                {% comment %} <form method="post" action="{% url 'save_image' pk=image.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success mt-2 ">Save Image</button>
+                                </form> {% endcomment %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% include "partials/_footer.html" %}
+
+        </div>
+    </div>
 
 </body>
 </html>
