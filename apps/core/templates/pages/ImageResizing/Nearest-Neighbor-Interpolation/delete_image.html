@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Resizer</title>
+</head>
+<body>
+
+<h2>Confirm Deletion</h2>
+
+<p>Are you sure you want to delete the image?</p>
+
+<form method="post" action="">
+    {% csrf_token %}
+    <input type="hidden" name="confirm_delete" value="yes">
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'image_detail' pk=image.pk %}">Cancel</a>
+</form>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Resizer</title>
+</head>
+<body>
+
+<h2>Image Details</h2>
+
+<img src="{{ image.original_image.url }}" alt="Original Image">
+<br>
+{% if image.resized_image %}
+    <img src="{{ image.resized_image.url }}" alt="Resized Image">
+{% endif %}
+
+<form method="post" action="{% url 'delete_image' pk=image.pk %}">
+    {% csrf_token %}
+    <button type="submit">Delete Image</button>
+</form>
+
+</body>
+</html>
