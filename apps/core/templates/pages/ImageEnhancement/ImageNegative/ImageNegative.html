@@ -9,7 +9,7 @@
     <meta name="author" content="NobleUI">
     <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
     
-    <title>Image Processor</title>
+    <title>Image Processing</title>
 
     {% include "includes/loadstatic.html" %}
 </head>
@@ -35,7 +35,7 @@
                                           </div>
                                         </div>  
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Upload Image</button>
+                                    <button type="submit" class="btn btn-primary">Image Negative</button>
                                 </form>
 
 
@@ -46,7 +46,7 @@
                                             <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
                                         </div>
                                         <div class="col-md-6">
-                                            <h2>Converted Image</h2>
+                                            <h2 >Converted Image</h2>
                                             <img src="{{ uploaded_image.resized_image.url }}" class="w-100" alt="Converted Image">
                                             
                                         </div>
