@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huffman Encoding</title>
+    {% include "includes/loadstatic.html" %}
+</head>
+<body>
+    <div class="main-wrapper">
+        {% include "partials/_sidebar.html" %}
+        {% include "partials/_setting.html" %}
+        <div class="page-wrapper">
+            {% include "partials/_navbar.html" %}
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Huffman Encoding</h4>
+                                
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% if form.is_bound %}
+                                        <button type="submit" class="btn btn-primary mb-5">Clear</button>
+                                    {% endif %}
+                                </form>
+                            
+                                {% if error_message %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error_message }}
+                                    </div>
+                                {% else %}
+                                    {% if uploaded_image %}
+                                        <div class="alert alert-success" role="alert">
+                                            Image Uploaded Successfully
+                                        </div>
+                                    {% endif %}
+                                    {% if encoded_image %}
+                                        <div class="alert alert-success" role="alert">
+                                            Image Encoded Successfully
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5>Original Image</h5>
+                                            {% if uploaded_image %}
+                                                <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
+                                                <p>Original Size: {{ original_size }} bits</p>
+                            
+                                                <p>Binary Representation: {{ original_binary }}</p>
+                                                
+                                                
+                                               
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h5>Encoded Image</h5>
+                                            {% if uploaded_image.resized_image %}
+                                                {% comment %} <img src="{{ MEDIA_URL }}{{ uploaded_image.resized_image.url }}" class="w-100" alt="Encoded Image"> {% endcomment %}
+                                                <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
+                                                <p>Encoded Size: {{ encoded_size }} bits</p>
+                                                <p>Binary Representation: {{ encoded_binary }}</p>
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+                                {% endif %}
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                {{ form.original_image.label_tag }}
+                                                {{ form.original_image }}
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Huffman Encode</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include "partials/_footer.html" %}
+        </div>
+    </div>
+</body>
+</html>

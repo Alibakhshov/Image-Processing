@@ -12,4 +12,5 @@ urlpatterns = [
     path('image/negative/', views.home, name='ImageNegative'),
     path('histogram/equalization/', views.histEqual, name='HistogramEqualization'),
     path('contrast/stretching/', views.contrastStretch, name='ContrastStretching'),
+    path('huffman/encoding/', views.huffmanEncoding, name='HuffmanEncoding'),
 ]

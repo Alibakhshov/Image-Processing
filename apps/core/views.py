@@ -291,3 +291,79 @@ def contrast_stretching(image_path):
     img_file = SimpleUploadedFile("stretched_image.png", img_encoded.tobytes(), content_type="image/png")
 
     return img_file
+
+# ##################################Image compression##########################################################################
+# In your views.py
+# In your views.py
+from django.shortcuts import render
+from .forms import ImageForm
+from .huffman_utils import read_binary_file, huffman_encode, write_binary_file, calculate_binary_size
+
+def huffmanEncoding(request):
+    print("Form submitted")
+
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("Form is valid")
+
+            # Save the original image
+            instance = form.save()
+
+            # Get the path of the uploaded image
+            img_path = instance.original_image.path
+
+            # Print some information for debugging
+            print(f"Image path: {img_path}")
+            print(f"File size: {os.path.getsize(img_path)} bytes")
+
+            # Read the binary data from the image file
+            original_data = read_binary_file(img_path)
+
+            if not original_data:
+                return render(request, 'pages/ImageCompression/HuffmanCoding/HuffmanEncoding.html', {
+                    'form': form,
+                    'error_message': 'The uploaded image file is empty.',
+                })
+
+            # Print some information for debugging
+            print(f"Original data size: {len(original_data)} bits")
+
+            # Perform Huffman encoding
+            encoded_data, huffman_tree = huffman_encode(original_data)
+
+            # Save the encoded data to a binary file
+            encoded_file_path = 'resized_images/encoded_data.bin'
+            write_binary_file(encoded_data, encoded_file_path)
+
+            # Save the path of the encoded image in the model
+            instance.resized_image.name = 'resized_images/encoded_data.bin'
+            instance.save()  # Save the instance with the resized_image path
+
+            # Print some information for debugging
+            print(f"Encoded data size: {len(encoded_data)} bits")
+
+            # Convert binary data to a string of '0's and '1's
+            original_binary_str = ''.join(str(bit) for bit in original_data)
+            encoded_binary_str = ''.join(str(bit) for bit in encoded_data)
+
+            # Calculate the sizes before and after encoding
+            original_size = calculate_binary_size(img_path)
+            encoded_size = calculate_binary_size(encoded_file_path)
+
+            # Render the template with the updated data
+            return render(request, 'pages/ImageCompression/HuffmanCoding/HuffmanEncoding.html', {
+                'form': form,
+                'uploaded_image': instance,
+                'original_size': original_size,
+                'encoded_size': encoded_size,
+                'original_binary': original_binary_str,
+                'encoded_binary': encoded_binary_str,
+            })
+        else:
+            print("Form has validation errors")
+            print(form.errors)  # Print the form errors for debugging
+    else:
+        form = ImageForm()
+
+    return render(request, 'pages/ImageCompression/HuffmanCoding/HuffmanEncoding.html', {'form': form})
