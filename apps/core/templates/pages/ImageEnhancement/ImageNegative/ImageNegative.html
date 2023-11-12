@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="NobleUI">
+    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+    
+    <title>Image Processor</title>
+
+    {% include "includes/loadstatic.html" %}
+</head>
+<body>
+    <div class="main-wrapper">
+        {% include "partials/_sidebar.html" %}
+        {% include "partials/_setting.html" %}
+        <div class="page-wrapper">
+            {% include "partials/_navbar.html" %}
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Image Processor</h4>
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                          <div class="mb-3">
+                                            {{ form.original_image.label_tag }}
+                                            {{ form.original_image }}
+                                          </div>
+                                        </div>  
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Upload Image</button>
+                                </form>
+
+
+                                {% if uploaded_image %}
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <h2>Original Image</h2>
+                                            <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h2>Converted Image</h2>
+                                            <img src="{{ uploaded_image.resized_image.url }}" class="w-100" alt="Converted Image">
+                                            
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include "partials/_footer.html" %}
+        </div>
+    </div>
+</body>
+</html>

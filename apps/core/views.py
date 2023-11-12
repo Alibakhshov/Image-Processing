@@ -1,12 +1,4 @@
 from django.shortcuts import render
-
-
-def dashboard(request):
-    return render(request, "dashboard.html")
-
-def cropping(request):
-    return render(request, "pages/ImageResizing/cropper.html")
-
 from django.shortcuts import render, redirect
 from .models import Image
 from .forms import ImageForm
@@ -19,6 +11,13 @@ import os
 from django.conf import settings
 from django.contrib import messages
 
+def dashboard(request):
+    return render(request, "dashboard.html")
+
+def cropping(request):
+    return render(request, "pages/ImageResizing/cropper.html")
+
+# ##################################Image resizing##########################################################################
 
 def resize_image(image_path, width, height):
     image = PILImage.open(image_path)
@@ -96,3 +95,47 @@ def save_image(request, pk):
             return redirect('image_detail', pk=image.pk)
     
     return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/save_image.html', {'image': image})
+
+# ##################################Image enhancement##########################################################################
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import Image
+from PIL import Image as PilImage
+import numpy as np
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+
+def convert_to_negative(image):
+    img = PilImage.open(image)
+    img_array = np.array(img)
+    negative_array = 255 - img_array
+    negative_img = PilImage.fromarray(negative_array.astype('uint8'))
+    buffer = BytesIO()
+    negative_img.save(buffer, format='JPEG')
+    return InMemoryUploadedFile(buffer, None, f'negative_{image.name}', 'image/jpeg', buffer.tell(), None)
+
+def home(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_image = form.save(commit=False)
+            uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
+            uploaded_image.save()
+            return render(request, 'pages/ImageEnhancement/ImageNegative/ImageNegative.html', {'form': form, 'uploaded_image': uploaded_image})
+    else:
+        form = ImageForm()
+    return render(request, 'pages/ImageEnhancement/ImageNegative/ImageNegative.html', {'form': form})
+
+def convert_to_negative_view(request, pk):
+    uploaded_image = Image.objects.get(pk=pk)
+    uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
+    uploaded_image.save()
+    return redirect('ImageNegative')
+
+def convert_to_positive_view(request, pk):
+    uploaded_image = Image.objects.get(pk=pk)
+    uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
+    uploaded_image.save()
+    return redirect('ImageNegative')
