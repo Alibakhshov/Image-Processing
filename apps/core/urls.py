@@ -11,4 +11,5 @@ urlpatterns = [
     path('save/<int:pk>/', views.save_image, name='save_image'),
     path('image/negative/', views.home, name='ImageNegative'),
     path('histogram/equalization/', views.histEqual, name='HistogramEqualization'),
+    path('contrast/stretching/', views.contrastStretch, name='ContrastStretching'),
 ]

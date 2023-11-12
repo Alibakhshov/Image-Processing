@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from .models import Image
@@ -106,6 +107,17 @@ import numpy as np
 from io import BytesIO
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
+from .forms import ImageForm
+
+from PIL import Image as PILImage, ImageOps
+import numpy as np
+from django.core.files.storage import default_storage
+from django.conf import settings
+import os
+import cv2
+import json
+
+
 
 def convert_to_negative(image):
     img = PilImage.open(image)
@@ -140,18 +152,6 @@ def home(request):
 #     uploaded_image.save()
 #     return redirect('ImageNegative')
 
-
-from django.shortcuts import render, redirect
-from .forms import ImageForm
-from .models import Image
-from PIL import Image as PILImage, ImageOps
-import numpy as np
-from django.core.files.storage import default_storage
-from django.conf import settings
-import os
-import cv2
-import json
-
 # Histogram Equalization
 def histogram_equalization(img_path):
     # Open the image using PIL
@@ -165,28 +165,6 @@ def histogram_equalization(img_path):
     img_equalized.save(temp_path)
 
     return temp_path
-
-# def histEqual(request):
-#     if request.method == 'POST':
-#         form = ImageForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             # Save the original image
-#             instance = form.save()
-
-#             # Get the path of the uploaded image
-#             img_path = instance.original_image.path
-
-#             # Perform histogram equalization
-#             equalized_image_path = histogram_equalization(img_path)
-
-#             # Save the path of the equalized image in the model
-#             instance.resized_image.name = default_storage.save('resized_images/equalized_image.png', open(equalized_image_path, 'rb'))
-
-#             return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {'form': form, 'uploaded_image': instance})
-#     else:
-#         form = ImageForm()
-
-#     return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {'form': form})
 
 def histEqual(request):
     if request.method == 'POST':
@@ -231,3 +209,85 @@ def get_histogram_data(image_path):
     hist, bins = np.histogram(img.flatten(), 256, [0, 256])
     hist = hist.tolist()
     return hist
+
+# Contrast Stretching
+from django.shortcuts import render
+from .forms import ImageForm
+from django.core.files.storage import default_storage
+from django.http import HttpResponse
+import cv2
+import numpy as np
+import json
+from django.core.files.uploadedfile import SimpleUploadedFile
+from io import BytesIO
+
+
+def contrastStretch(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the original image
+            instance = form.save()
+
+            # Get the path of the uploaded image
+            img_path = instance.original_image.path
+
+            # Perform contrast stretching
+            stretched_image = contrast_stretching(img_path)
+
+            # Assign the stretched image to the instance
+            instance.resized_image.save(stretched_image.name, stretched_image)
+
+            # Pass histogram data to the template
+            original_histogram, stretched_histogram = calculate_histograms(img_path, instance.resized_image.path)
+
+            return render(request, 'pages/ImageEnhancement/ContrastStretching/ContrastStretching.html', {
+                'form': form,
+                'uploaded_image': instance,
+                'original_histogram': json.dumps(original_histogram),
+                'stretched_histogram': json.dumps(stretched_histogram),
+            })
+    else:
+        form = ImageForm()
+
+    return render(request, 'pages/ImageEnhancement/ContrastStretching/ContrastStretching.html', {'form': form})
+
+def calculate_histograms(original_image_path, stretched_image_path):
+    # Calculate histograms for both original and stretched images
+    original_histogram = get_histogram_data(original_image_path)
+    stretched_histogram = get_histogram_data(stretched_image_path)
+
+    return original_histogram, stretched_histogram
+
+def get_histogram_data(image_path):
+    # Calculate the histogram data from the image
+    img = cv2.imread(image_path, 0)  # Read the image in grayscale
+    hist, bins = np.histogram(img.flatten(), 256, [0, 256])
+    hist = hist.tolist()
+    return hist
+
+from django.core.files.uploadedfile import SimpleUploadedFile
+from io import BytesIO
+import base64
+
+
+def contrast_stretching(image_path):
+    img = cv2.imread(image_path, 0)  # Read the image in grayscale
+
+    # Calculate min and max pixel values
+    min_val = np.min(img)
+    max_val = np.max(img)
+
+    # Apply contrast stretching formula
+    stretched_img = ((img - min_val) / (max_val - min_val)) * 255
+
+    # Convert to uint8 (required for saving with OpenCV)
+    stretched_img = np.uint8(stretched_img)
+
+    # Save the stretched image
+    _, img_encoded = cv2.imencode('.png', stretched_img)
+
+    # Convert to SimpleUploadedFile
+    img_file = SimpleUploadedFile("stretched_image.png", img_encoded.tobytes(), content_type="image/png")
+
+    return img_file
