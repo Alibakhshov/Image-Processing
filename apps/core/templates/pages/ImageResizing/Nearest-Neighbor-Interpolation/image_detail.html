@@ -69,10 +69,10 @@
 
 
                                 {% endif %}
-                                <form method="post" action="{% url 'save_image' pk=image.pk %}">
+                                <form method="post" action="{% url 'delete_image' pk=image.pk %}">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger">Delete Image</button>
-                                    <a href="{% url 'upload_image' %}" class="btn btn-primary">Back</a>
+                                    <a href="{% url 'NearestNeighborInterpolation' %}" class="btn btn-primary">Back</a>
                         
                                 </form>
                                 {% comment %} <form method="post" action="{% url 'save_image' pk=image.pk %}">

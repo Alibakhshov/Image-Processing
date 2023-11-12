@@ -75,7 +75,7 @@ def delete_image(request, pk):
 
             # Delete the database entry
             image.delete()
-            return redirect('upload_image')
+            return redirect('NearestNeighborInterpolation')
     
     return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/delete_image.html', {'image': image})
 
