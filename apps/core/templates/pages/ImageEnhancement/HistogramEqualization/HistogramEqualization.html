@@ -1,0 +1,240 @@
+{% comment %} <!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="NobleUI">
+    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+    <title>Image Processing</title>
+
+    {% include "includes/loadstatic.html" %}
+
+</head>
+
+<body>
+    <div class="main-wrapper">
+        {% include "partials/_sidebar.html" %}
+        {% include "partials/_setting.html" %}
+        <div class="page-wrapper">
+
+            {% include "partials/_navbar.html" %}
+
+            <div class="page-content">
+                <nav class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Advanced UI</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Cropper</li>
+                    </ol>
+                </nav>
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Enhance Your Images with Histogram Equalization</h4>
+                                <p class="text-muted">
+                                    Elevate image quality using histogram equalization! This technique enhances contrast, bringing out
+                                    hidden details. Explore the power of pixel intensity distribution for vibrant, captivating visuals.
+                                </p>
+                                <p class="text-muted">
+                                    <strong>Learn more:</strong> <a href="https://en.wikipedia.org/wiki/Histogram_equalization"
+                                        target="_blank">Discover Histogram Equalization</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                {{ form.original_image.label_tag }}
+                                                {{ form.original_image }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Process Image</button>
+                                </form>
+
+                                {% if uploaded_image %}
+                                    <div class="row mt-4">
+                                        <div class="col-md-6">
+                                            <h2>Original Image</h2>
+                                            <img src="{{ uploaded_image.original_image.url }}" class="w-100"
+                                                alt="Original Image">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h2>Equalized Image</h2>
+                                            <img src="{{ uploaded_image.resized_image.url }}" class="w-100"
+                                                alt="Equalized Image">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of New HTML -->
+
+            </div>
+
+            {% include "partials/_footer.html" %}
+
+        </div>
+    </div>
+
+</body>
+
+</html> {% endcomment %}
+
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="NobleUI">
+    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+    <title>Image Processing</title>
+
+    {% include "includes/loadstatic.html" %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="main-wrapper">
+        {% include "partials/_sidebar.html" %}
+        {% include "partials/_setting.html" %}
+        <div class="page-wrapper">
+
+            {% include "partials/_navbar.html" %}
+
+            <div class="page-content">
+                <nav class="page-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Advanced UI</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Image Processing</li>
+                    </ol>
+                </nav>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                {{ form.original_image.label_tag }}
+                                {{ form.original_image }}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Process Image</button>
+                </form>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <h2>Original Image</h2>
+                        <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
+                        <canvas id="originalHistogram" width="400" height="200"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <h2>Equalized Image</h2>
+                        <img src="{{ uploaded_image.resized_image.url }}" class="w-100" alt="Equalized Image">
+                        <canvas id="equalizedHistogram" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        var originalData = {
+                            labels: Array.from({ length: 256 }, (_, i) => i),
+                            values: {{ original_histogram | safe }},
+                        };
+
+                        var equalizedData = {
+                            labels: Array.from({ length: 256 }, (_, i) => i),
+                            values: {{ equalized_histogram | safe }},
+                        };
+
+                        var originalCtx = document.getElementById('originalHistogram').getContext('2d');
+                        var equalizedCtx = document.getElementById('equalizedHistogram').getContext('2d');
+
+                        var originalChart = new Chart(originalCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: originalData.labels,
+                                datasets: [{
+                                    label: 'Original Histogram',
+                                    data: originalData.values,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'linear',
+                                        position: 'bottom'
+                                    },
+                                    y: {
+                                        min: 0
+                                    }
+                                }
+                            }
+                        });
+
+                        var equalizedChart = new Chart(equalizedCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: equalizedData.labels,
+                                datasets: [{
+                                    label: 'Equalized Histogram',
+                                    data: equalizedData.values,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        type: 'linear',
+                                        position: 'bottom'
+                                    },
+                                    y: {
+                                        min: 0
+                                    }
+                                }
+                            }
+                        });
+                    });
+                </script>
+
+            </div>
+
+            {% include "partials/_footer.html" %}
+
+        </div>
+    </div>
+
+</body>
+
+</html>

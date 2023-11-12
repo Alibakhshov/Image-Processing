@@ -128,14 +128,106 @@ def home(request):
         form = ImageForm()
     return render(request, 'pages/ImageEnhancement/ImageNegative/ImageNegative.html', {'form': form})
 
-def convert_to_negative_view(request, pk):
-    uploaded_image = Image.objects.get(pk=pk)
-    uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
-    uploaded_image.save()
-    return redirect('ImageNegative')
+# def convert_to_negative_view(request, pk):
+#     uploaded_image = Image.objects.get(pk=pk)
+#     uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
+#     uploaded_image.save()
+#     return redirect('ImageNegative')
 
-def convert_to_positive_view(request, pk):
-    uploaded_image = Image.objects.get(pk=pk)
-    uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
-    uploaded_image.save()
-    return redirect('ImageNegative')
+# def convert_to_positive_view(request, pk):
+#     uploaded_image = Image.objects.get(pk=pk)
+#     uploaded_image.resized_image = convert_to_negative(uploaded_image.original_image)
+#     uploaded_image.save()
+#     return redirect('ImageNegative')
+
+
+from django.shortcuts import render, redirect
+from .forms import ImageForm
+from .models import Image
+from PIL import Image as PILImage, ImageOps
+import numpy as np
+from django.core.files.storage import default_storage
+from django.conf import settings
+import os
+import cv2
+import json
+
+# Histogram Equalization
+def histogram_equalization(img_path):
+    # Open the image using PIL
+    img = PILImage.open(img_path).convert('L')  # Convert to grayscale
+
+    # Apply histogram equalization
+    img_equalized = ImageOps.equalize(img)
+
+    # Save the equalized image to a temporary file
+    temp_path = os.path.join(settings.MEDIA_ROOT, 'temp_equalized_image.png')
+    img_equalized.save(temp_path)
+
+    return temp_path
+
+# def histEqual(request):
+#     if request.method == 'POST':
+#         form = ImageForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # Save the original image
+#             instance = form.save()
+
+#             # Get the path of the uploaded image
+#             img_path = instance.original_image.path
+
+#             # Perform histogram equalization
+#             equalized_image_path = histogram_equalization(img_path)
+
+#             # Save the path of the equalized image in the model
+#             instance.resized_image.name = default_storage.save('resized_images/equalized_image.png', open(equalized_image_path, 'rb'))
+
+#             return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {'form': form, 'uploaded_image': instance})
+#     else:
+#         form = ImageForm()
+
+#     return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {'form': form})
+
+def histEqual(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Save the original image
+            instance = form.save()
+
+            # Get the path of the uploaded image
+            img_path = instance.original_image.path
+
+            # Perform histogram equalization
+            equalized_image_path = histogram_equalization(img_path)
+
+            # Save the path of the equalized image in the model
+            instance.resized_image.name = default_storage.save('resized_images/equalized_image.png', open(equalized_image_path, 'rb'))
+
+            # Pass histogram data to the template
+            original_histogram, equalized_histogram = calculate_histograms(img_path, equalized_image_path)
+
+            return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {
+                'form': form,
+                'uploaded_image': instance,
+                'original_histogram': json.dumps(original_histogram),
+                'equalized_histogram': json.dumps(equalized_histogram),
+            })
+    else:
+        form = ImageForm()
+
+    return render(request, 'pages/ImageEnhancement/HistogramEqualization/HistogramEqualization.html', {'form': form})
+
+def calculate_histograms(original_image_path, equalized_image_path):
+    # Calculate histograms for both original and equalized images
+    original_histogram = get_histogram_data(original_image_path)
+    equalized_histogram = get_histogram_data(equalized_image_path)
+
+    return original_histogram, equalized_histogram
+
+def get_histogram_data(image_path):
+    # Calculate the histogram data from the image
+    img = cv2.imread(image_path, 0)  # Read the image in grayscale
+    hist, bins = np.histogram(img.flatten(), 256, [0, 256])
+    hist = hist.tolist()
+    return hist
