@@ -421,3 +421,37 @@ def segment_image(img_path, threshold):
     segmented_image_path = default_storage.save(os.path.join('segmented_images', segmented_image_name), ContentFile(buffered.getvalue()))
 
     return segmented_image_path
+
+# image segmentation using region based segmentation
+from django.conf import settings
+from .segmentation_utils import watershed_segmentation
+
+from django.conf import settings
+
+def regionBasedSegmentation(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save()
+
+            # Perform region-based segmentation (Watershed algorithm)
+            segmented_image_path = watershed_segmentation(instance.original_image.path)
+
+            # Get the URL of the segmented image
+            original_image_url = instance.original_image.url
+            segmented_image_url = original_image_url.replace(
+                'images', 'segmented_images'
+            ).replace(
+                os.path.basename(original_image_url),
+                os.path.basename(segmented_image_path)
+            )
+
+            return render(request, 'pages/ImageSegmentation/RegionBased/RegionBased.html', {
+                'form': form,
+                'uploaded_image': instance,
+                'segmented_image_url': segmented_image_url,
+            })
+    else:
+        form = ImageForm()
+
+    return render(request, 'pages/ImageSegmentation/RegionBased/RegionBased.html', {'form': form})
