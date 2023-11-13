@@ -15,4 +15,5 @@ urlpatterns = [
     path('huffman/encoding/', views.huffmanEncoding, name='HuffmanEncoding'),
     path('thresholding/', views.image_segmentation, name='Thresholding'),
     path('regionBasedSegmentation/', views.regionBasedSegmentation, name='RegionBasedSegmentation'),
+    path('edgeBasedSegmentation/', views.edgeBasedSegmentation, name='EdgeBasedSegmentation'),
 ]

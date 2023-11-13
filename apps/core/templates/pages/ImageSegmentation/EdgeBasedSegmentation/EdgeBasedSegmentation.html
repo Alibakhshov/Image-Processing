@@ -1,3 +1,27 @@
+{% comment %} 
+
+
+<div class="container mt-5">
+    <h2>Edge-Based Segmentation</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Segment Image</button>
+    </form>
+
+    {% if uploaded_image %}
+        <h3>Uploaded Image</h3>
+        <img src="{{ uploaded_image.original_image.url }}" class="img-fluid" alt="Uploaded Image">
+
+        {% if segmented_image_url %}
+            <h3>Segmented Image</h3>
+            <img src="{{ segmented_image_url }}" class="img-fluid" alt="Segmented Image">
+        {% endif %}
+    {% endif %}
+</div> {% endcomment %}
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
@@ -9,7 +33,7 @@
     <meta name="author" content="NobleUI">
     <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-    <title>Region-Based Segmentation</title>
+    <title>Image Processing</title>
 
     {% include "includes/loadstatic.html" %}
 </head>
@@ -25,8 +49,8 @@
                     <div class="col-md-12 grid-margin stretch-card">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Region-Based Segmentation</h4>
-                                <p class="text-muted">Perform image segmentation using region-based techniques. Adjust parameters as needed.</p>
+                                <h4 class="card-title">Edge-Based Segmentation</h4>
+                                <p class="text-muted">Perform image segmentation using edge-based techniques. Adjust parameters as needed.</p>
                                 <!-- Form for image upload -->
                                 <form method="post" enctype="multipart/form-data">
                                     {% csrf_token %}
@@ -47,8 +71,6 @@
                                             <h2>Segmented Image</h2>
                                             <img src="{{ segmented_image_url }}" class="w-100" alt="Segmented Image">
                                         </div>
-                                        
-                                        
                                     </div>
                                 {% endif %}
                             </div>
@@ -61,3 +83,7 @@
     {% include "partials/_footer.html" %}
 </body>
 </html>
+
+
+
+
