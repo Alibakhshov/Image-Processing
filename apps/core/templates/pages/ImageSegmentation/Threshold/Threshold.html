@@ -1,134 +1,81 @@
-{% comment %} <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Segmentation</title>
-</head>
-<body>
-    <h1>Image Segmentation</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Segment Image</button>
-    </form>
-
-    {% if uploaded_image %}
-        <div>
-            <h2>Original Image</h2>
-            <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
-        </div>
-        <div>
-            <h2>Segmented Image</h2>
-            <img src="{{ MEDIA_URL }}{{ uploaded_image.segmented_image.url }}" class="w-100" alt="Segmented Image">
-        </div>
-    {% endif %}
-
-</body>
-</html> {% endcomment %}
-
-
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
-	<meta name="author" content="NobleUI">
-	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="NobleUI">
+    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-	<title>Image Processing</title>
+    <title>Image Processing</title>
 
-  {% include "includes/loadstatic.html" %}
-
- 
+    {% include "includes/loadstatic.html" %}
 </head>
 <body>
-	<div class="main-wrapper">
-
-		{% include "partials/_sidebar.html" %}
+<div class="main-wrapper">
+    {% include "partials/_sidebar.html" %}
     {% include "partials/_setting.html" %}
 
-		<div class="page-wrapper">
-				
-			{% include "partials/_navbar.html" %}
+    <div class="page-wrapper">
+        {% include "partials/_navbar.html" %}
+        <div class="page-content">
+            <nav class="page-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Image Segmentation</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Thresholding</li>
+                </ol>
+            </nav>
 
-			<div class="page-content">
-
-				<nav class="page-breadcrumb">
-					<ol class="breadcrumb">
-						<li class="breadcrumb-item"><a href="#">Advanced UI</a></li>
-						<li class="breadcrumb-item active" aria-current="page">Cropper</li>
-					</ol>
-				</nav>
-
-				<div class="row">
-					<div class="col-md-12 grid-margin stretch-card">
-						<div class="card">
-							<div class="card-body">
-								<h4 class="card-title">CropperJs</h4>
-                <p class="text-muted">Read the <a href="https://github.com/fengyuanchen/cropperjs" target="_blank"> Official CropperJs Documentation </a>for a full list of instructions and other options.</p>                  
-							</div>
-						</div>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-md-12 grid-margin stretch-card">
-            <div class="card">
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-md-8">
-                    <div class="mb-3">
-                      <input class="form-control" type="file" id="cropperImageUpload">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Image Segmentation with Thresholding</h4>
+                        <p class="text-muted">Segment an image using thresholding. Adjust the threshold to control the segmentation outcome. For more details, refer to the <a href="https://example-link-to-segmentation-documentation" target="_blank">Documentation on Image Segmentation</a>.</p>
                     </div>
-                    <div>
-                      {% comment %} <img src="{% static 'images/others/placeholder.jpg' %}" class="w-100" id="croppingImage" alt="cropper"> {% endcomment %}
-                      <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                      <div class="d-flex align-items-center flex-wrapp me-2 mt-3">
-                        {% comment %} <label class="w-50 me-3 mb-0 mb-2 mb-md-0 text-nowrap">Width (px) :</label>
-                        <input type="number" value="300" class="form-control img-w me-2 mb-2 mb-md-0 w-75" placeholder="Image width"> {% endcomment %}
-                        {% comment %} <button class="btn btn-primary crop mb-2 mb-md-0">Crop</button> {% endcomment %}
-                        <form method="post" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            {% comment %} {{ form.as_p }} {% endcomment %}
-                            <div class="w-50 me-3 mb-0 mb-2 mb-md-0 text-nowrap">
-                                {{form.original_image}}
-                                {{form.segmented_image}}
-                                {{form.threshold}}
-                            </div>
-                            <button type="submit" class="btn btn-primary crop mb-2 mb-md-0">Segment Image</button>
-                        </form>
-                      </div>
-                      <div class="mb-4 mb-md-0 mt-3">
-                        <a href="javascript:;" class="btn btn-outline-primary download">Download</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4 ms-auto">
-                    <h6 class="text-muted mb-3">Cropped Image: </h6>
-                    <img src="{{ MEDIA_URL }}{{ uploaded_image.segmented_image.url }}" class="w-100 cropped-img mt-2" alt="Segmented Image">
-                    {% comment %} <img class="w-100 cropped-img mt-2" src="#" alt=""> {% endcomment %}
-                  </div>
                 </div>
-              </div>
             </div>
-          </div>
+
+            <div class="row">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div>
+                                        <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                        <form method="post" enctype="multipart/form-data">
+                                            {% csrf_token %}
+                                            <div class="form-control input-group">
+                                                {{ form.original_image.label_tag }}
+                                                {{ form.original_image }}
+                                                {{ form.threshold.label_tag }}
+                                                {{ form.threshold }}
+                                                {{ form.threshold_error }}
+                                            </div>
+                                            <div class="mb-4 mb-md-0 mt-3">
+                                                <button type="submit" class="btn btn-outline-primary download">Segment Image</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 ms-auto">
+                                    <h6 class="text-muted mb-3">Segmented Image: </h6>
+                                    <img src="{{ MEDIA_URL }}{{ uploaded_image.segmented_image.url }}" class="w-100 cropped-img mt-2" alt="Segmented Image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        {% include "partials/_footer.html" %}
+    </div>
 
-			</div>
-
-			{% include "partials/_footer.html" %}
-	
-		</div>
-	</div>
-
-
+    
+</div>
 </body>
 </html>
-
-
