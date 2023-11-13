@@ -13,4 +13,5 @@ urlpatterns = [
     path('histogram/equalization/', views.histEqual, name='HistogramEqualization'),
     path('contrast/stretching/', views.contrastStretch, name='ContrastStretching'),
     path('huffman/encoding/', views.huffmanEncoding, name='HuffmanEncoding'),
+    path('thresholding/', views.image_segmentation, name='Thresholding'),
 ]

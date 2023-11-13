@@ -367,3 +367,57 @@ def huffmanEncoding(request):
         form = ImageForm()
 
     return render(request, 'pages/ImageCompression/HuffmanCoding/HuffmanEncoding.html', {'form': form})
+
+# ##################################Image segmentation##########################################################################
+
+
+from django.shortcuts import render
+from .forms import ImageSegmentationForm
+from .models import Image
+from PIL import Image
+import numpy as np
+from io import BytesIO
+import os
+
+def image_segmentation(request):
+    if request.method == 'POST':
+        form = ImageSegmentationForm(request.POST, request.FILES)
+        if form.is_valid():
+            instance = form.save()
+
+            # Get the path of the uploaded image
+            img_path = instance.original_image.path
+
+            # Perform image segmentation using thresholding
+            threshold = form.cleaned_data['threshold']
+            segmented_image_path = segment_image(img_path, threshold)
+
+            # Save the path of the segmented image in the model
+            instance.segmented_image.name = segmented_image_path
+            instance.save()
+
+            return render(request, 'pages/ImageSegmentation/Threshold/Threshold.html', {'form': form, 'uploaded_image': instance})
+    else:
+        form = ImageSegmentationForm()
+
+    return render(request, 'pages/ImageSegmentation/Threshold/Threshold.html', {'form': form})
+
+from django.core.files.storage import default_storage
+
+def segment_image(img_path, threshold):
+    img = Image.open(img_path).convert('L')  # Convert to grayscale
+    img_array = np.array(img)
+    segmented_array = np.where(img_array > threshold, 255, 0)  # Apply thresholding
+    segmented_img = Image.fromarray(segmented_array.astype(np.uint8))
+
+    # Save the segmented image to BytesIO
+    buffered = BytesIO()
+    segmented_img.save(buffered, format="PNG")
+    
+    # Create a unique file name for the segmented image
+    segmented_image_name = f'segmented_image_{threshold}.png'
+
+    # Save the segmented image to the media root using Django's storage system
+    segmented_image_path = default_storage.save(os.path.join('segmented_images', segmented_image_name), ContentFile(buffered.getvalue()))
+
+    return segmented_image_path
