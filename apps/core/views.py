@@ -1,7 +1,7 @@
 import uuid
 from django.shortcuts import render
 from django.shortcuts import render, redirect
-from .models import Image
+from .models import Image as ImageProcessing
 from .forms import ImageForm
 from PIL import Image as PILImage
 from io import BytesIO
@@ -49,7 +49,7 @@ def upload_image(request):
 
 def image_detail(request, pk):
     try:
-        image = Image.objects.get(pk=pk)
+        image = ImageProcessing.objects.get(pk=pk)
     except ObjectDoesNotExist:
         return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/image_not_found.html')
 
@@ -57,7 +57,7 @@ def image_detail(request, pk):
 
 def delete_image(request, pk):
     try:
-        image = Image.objects.get(pk=pk)
+        image = ImageProcessing.objects.get(pk=pk)
     except ObjectDoesNotExist:
         return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/image_not_found.html')
 
@@ -81,7 +81,7 @@ def delete_image(request, pk):
 
 def save_image(request, pk):
     try:
-        image = Image.objects.get(pk=pk)
+        image = ImageProcessing.objects.get(pk=pk)
     except ObjectDoesNotExist:
         return render(request, 'pages/ImageResizing/Nearest-Neighbor-Interpolation/image_not_found.html')
 

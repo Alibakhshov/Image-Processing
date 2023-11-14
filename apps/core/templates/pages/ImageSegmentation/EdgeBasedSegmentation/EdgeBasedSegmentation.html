@@ -76,29 +76,22 @@
                             <div class="col-md-8">
                                 <div class="mb-3">
                                 {% comment %} <input class="form-control" type="file" id="cropperImageUpload"> {% endcomment %}
-                                <form method="post" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    {% comment %} {{ form.as_p }} {% endcomment %}
-                                    <div class="form-group mb-4">
-                                        {{ form.original_image.label_tag }}
-                                        {{ form.original_image }}
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary crop mb-2">Segment Image</button>
-                                </form>
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        {% comment %} {{ form.as_p }} {% endcomment %}
+                                        <div class="form-group mb-4">
+                                            {{ form.original_image.label_tag }}
+                                            {{ form.original_image }}
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary crop mb-2">Segment Image</button>
+                                    </form>
                                 </div>
                                 <div>
                                 {% comment %} <img src="{% static 'images/others/placeholder.jpg' %}" class="w-100" id="croppingImage" alt="cropper"> {% endcomment %}
-                                <img class="w-100" src="{{ uploaded_image.original_image.url }}" class="img-fluid" alt="Uploaded Image">
+                                    <img class="w-100" src="{{ uploaded_image.original_image.url }}" class="img-fluid" alt="Uploaded Image">
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                <div class="d-flex align-items-center flex-wrapp me-2 mt-3">
-                                    {% comment %} <label class="w-50 me-3 mb-0 mb-2 mb-md-0 text-nowrap">Width (px) :</label> {% endcomment %}
-                                    {% comment %} <input type="number" value="300" class="form-control img-w me-2 mb-2 mb-md-0 w-75" placeholder="Image width"> {% endcomment %}
-                                    
-                                    {% comment %} <button class="btn btn-primary crop mb-2 mb-md-0">Crop</button> {% endcomment %}
-                                </div>
-                                </div>
+                                
                             </div>
                             <div class="col-md-4 ms-auto">
                                 {% comment %} <h6 class="text-muted mb-3">Segmented Image: </h6> {% endcomment %}
