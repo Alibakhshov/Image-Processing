@@ -358,7 +358,7 @@ $(function() {
       },
       yaxis: {
         title: {
-          text: 'Revenue ( $1000 x )',
+          text: '# if usage',
           style:{
             size: 9,
             color: colors.muted
@@ -449,7 +449,7 @@ $(function() {
       yaxis: {
         opposite: true,
         title: {
-          text: 'Revenue ( $1000 x )',
+          text: '# of usage',
           offsetX: -135,
           style:{
             size: 9,
@@ -537,7 +537,7 @@ $(function() {
       },
       yaxis: {
         title: {
-          text: 'Number of Sales',
+          text: '# of usage',
           style:{
             size: 9,
             color: colors.muted
@@ -637,7 +637,7 @@ $(function() {
       yaxis: {
         opposite: true,
         title: {
-          text: 'Number of Sales',
+          text: '# of usage',
           offsetX: -108,
           style:{
             size: 9,
