@@ -459,12 +459,13 @@ def regionBasedSegmentation(request):
 # Edge based segmentation
 # views.py for edge-based segmentation
 from django.shortcuts import render
-from .forms import ImageForm
-from .edge_based_segmentation import canny_edge_segmentation 
+from .forms import EdgeBasedSegmentationForm
+from .edge_based_segmentation import canny_edge_segmentation
 
 def edgeBasedSegmentation(request):
     if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
+        form = EdgeBasedSegmentationForm(request.POST, request.FILES)
+        print(f"Form data: {request.POST}")
         if form.is_valid():
             instance = form.save()
 
@@ -485,7 +486,9 @@ def edgeBasedSegmentation(request):
                 'uploaded_image': instance,
                 'segmented_image_url': segmented_image_url,
             })
+        else:
+            print(f"Form errors: {form.errors}")
     else:
-        form = ImageForm()
+        form = EdgeBasedSegmentationForm()
 
-    return render(request, 'pages/ImageSegmentation/EdgeBased/EdgeBased.html',)
+    return render(request, 'pages/ImageSegmentation/EdgeBasedSegmentation/EdgeBasedSegmentation.html', {'form': form})

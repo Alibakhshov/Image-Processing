@@ -15,3 +15,8 @@ class ImageSegmentationForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = ['original_image', 'threshold']
+        
+class EdgeBasedSegmentationForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = ['original_image']

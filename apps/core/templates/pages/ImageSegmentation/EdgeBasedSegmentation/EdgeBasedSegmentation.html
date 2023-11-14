@@ -1,13 +1,11 @@
-{% comment %} 
+<!-- pages/ImageSegmentation/EdgeBasedSegmentation/EdgeBasedSegmentation.html -->
 
-
-<div class="container mt-5">
+{% comment %} <div class="container mt-5">
     <h2>Edge-Based Segmentation</h2>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-
         <button type="submit" class="btn btn-primary">Segment Image</button>
     </form>
 
@@ -22,68 +20,102 @@
     {% endif %}
 </div> {% endcomment %}
 
+
 <!DOCTYPE html>
 {% load static %}
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
-    <meta name="author" content="NobleUI">
-    <meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Responsive HTML Admin Dashboard Template based on Bootstrap 5">
+	<meta name="author" content="NobleUI">
+	<meta name="keywords" content="nobleui, bootstrap, bootstrap 5, bootstrap5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-    <title>Image Processing</title>
+	<title>Image Processing</title>
 
-    {% include "includes/loadstatic.html" %}
+  {% include "includes/loadstatic.html" %}
+
+ 
 </head>
 <body>
-    <div class="main-wrapper">
-        {% include "partials/_sidebar.html" %}
+	<div class="main-wrapper">
+
+		{% include "partials/_sidebar.html" %}
         {% include "partials/_setting.html" %}
-        <div class="page-wrapper">
-            {% include "partials/_navbar.html" %}
-            <div class="page-content">
-                <!-- Breadcrumb and card for segmentation -->
-                <div class="row">
-                    <div class="col-md-12 grid-margin stretch-card">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Edge-Based Segmentation</h4>
-                                <p class="text-muted">Perform image segmentation using edge-based techniques. Adjust parameters as needed.</p>
-                                <!-- Form for image upload -->
-                                <form method="post" enctype="multipart/form-data">
-                                    {% csrf_token %}
-                                    <div class="mb-3">
-                                        {{ form.original_image.label_tag }}
-                                        {{ form.original_image }}
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Segment Image</button>
-                                </form>
-                                <!-- Display the uploaded and segmented images -->
-                                {% if uploaded_image %}
-                                    <div class="row mt-4">
-                                        <div class="col-md-6">
-                                            <h2>Original Image</h2>
-                                            <img src="{{ uploaded_image.original_image.url }}" class="w-100" alt="Original Image">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h2>Segmented Image</h2>
-                                            <img src="{{ segmented_image_url }}" class="w-100" alt="Segmented Image">
-                                        </div>
-                                    </div>
-                                {% endif %}
+
+		<div class="page-wrapper">
+				
+			{% include "partials/_navbar.html" %}
+
+			<div class="page-content">
+
+				<nav class="page-breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a href="#">Image Segmentation</a></li>
+						<li class="breadcrumb-item active" aria-current="page">Edge Based Segmentation</li>
+					</ol>
+				</nav>
+
+				<div class="row">
+					<div class="col-md-12 grid-margin stretch-card">
+						<div class="card">
+							<div class="card-body">
+								<h4 class="card-title">Edge Based Segmentation</h4>
+                                <p class="text-muted"> </p>                  
                             </div>
                         </div>
                     </div>
                 </div>
+        
+                <div class="row">
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                {% comment %} <input class="form-control" type="file" id="cropperImageUpload"> {% endcomment %}
+                                <form method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {% comment %} {{ form.as_p }} {% endcomment %}
+                                    <div class="form-group mb-4">
+                                        {{ form.original_image.label_tag }}
+                                        {{ form.original_image }}
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary crop mb-2">Segment Image</button>
+                                </form>
+                                </div>
+                                <div>
+                                {% comment %} <img src="{% static 'images/others/placeholder.jpg' %}" class="w-100" id="croppingImage" alt="cropper"> {% endcomment %}
+                                <img class="w-100" src="{{ uploaded_image.original_image.url }}" class="img-fluid" alt="Uploaded Image">
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div class="d-flex align-items-center flex-wrapp me-2 mt-3">
+                                    {% comment %} <label class="w-50 me-3 mb-0 mb-2 mb-md-0 text-nowrap">Width (px) :</label> {% endcomment %}
+                                    {% comment %} <input type="number" value="300" class="form-control img-w me-2 mb-2 mb-md-0 w-75" placeholder="Image width"> {% endcomment %}
+                                    
+                                    {% comment %} <button class="btn btn-primary crop mb-2 mb-md-0">Crop</button> {% endcomment %}
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ms-auto">
+                                {% comment %} <h6 class="text-muted mb-3">Segmented Image: </h6> {% endcomment %}
+                                {% comment %} <img class="w-100 cropped-img mt-2" src="#" alt=""> {% endcomment %}
+                                {% if segmented_image_url %}
+                                    <h6 class="text-muted mb-3">Segmented Image</h6>
+                                    <img src="{{ segmented_image_url }}" class="img-fluid" alt="Segmented Image">
+                                {% endif %}
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    {% include "partials/_footer.html" %}
+			{% include "partials/_footer.html" %}
+		</div>
+	</div>
 </body>
 </html>
-
-
-
-
