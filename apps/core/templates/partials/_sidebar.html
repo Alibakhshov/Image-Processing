@@ -183,20 +183,20 @@
             </a>
             <div class="collapse" id="general-pages">
               <ul class="nav sub-menu">
-                <li class="nav-item">
+                {% comment %} <li class="nav-item">
                   <a href="" class="nav-link">Run-Length Encoding (RLE): </a>
-                </li>
+                </li> {% endcomment %}
                 <li class="nav-item">
                   <a href="{% url "HuffmanEncoding" %}" class="nav-link">Huffman Coding</a>
                 </li>
-                <li class="nav-item">
+                {% comment %} <li class="nav-item">
                   <a href="" class="nav-link">Arthematic Encoding</a>
-                </li>
+                </li> {% endcomment %}
                 
               </ul>
             </div>
           </li>
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#authPages" role="button" aria-expanded="false" aria-controls="authPages">
               <i class="link-icon" data-feather="unlock"></i>
               <span class="link-title">Lossy Compression</span>
@@ -215,7 +215,7 @@
                 </li>
               </ul>
             </div>
-          </li>
+          </li> {% endcomment %}
 
           <li class="nav-item nav-category">Image Segmentation</li>
           <li class="nav-item">
