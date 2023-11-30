@@ -48,8 +48,4 @@ Follow the coding style and conventions used in the existing codebase. Be consis
 
 If you have any questions or need further assistance, feel free to reach out to us through the [GitHub issues](https://github.com/Alibakhshov/Image-Processing/issues).
 
-## License
-
-By contributing to this project, you agree that your contributions will be licensed under the [MIT License](LICENSE).
-
 Thank you for contributing!
