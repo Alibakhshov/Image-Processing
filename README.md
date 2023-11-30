@@ -52,7 +52,7 @@ Region-based segmentation groups pixels into regions with similar properties, cr
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/your-username/image-processing-django.git`
+1. Clone the repository: `https://github.com/Alibakhshov/Image-Processing`
 2. Install dependencies: `pip install -r requirements.txt`
 3. Run the Django development server: `python manage.py runserver`
 4. Visit [http://localhost:8000](http://localhost:8000) in your browser.
