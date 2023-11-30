@@ -61,6 +61,3 @@ Region-based segmentation groups pixels into regions with similar properties, cr
 
 Feel free to contribute to the project by opening issues or submitting pull requests. Follow the [contribution guidelines](CONTRIBUTING.md) for more details.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE).
